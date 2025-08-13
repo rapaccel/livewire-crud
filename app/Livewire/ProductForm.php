@@ -2,13 +2,15 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use App\Models\Product;
+use Livewire\Component;
 use App\Models\Category;
 use Livewire\WithFileUploads;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ProductForm extends Component
 {
+     use AuthorizesRequests;
     use WithFileUploads;
 
     public $productId;
@@ -30,17 +32,25 @@ class ProductForm extends Component
 
     public function save()
     {
+        $this->authorize('create', Product::class);
+        if ($this->productId) {
+            $this->authorize('update', Product::findOrFail($this->productId));
+        }
         $this->validate([
             'name' => 'required|string|unique:products,name,' . $this->productId,
-            'price' => 'required|numeric',
+            'price' => 'required|numeric|min:0',
+            'description' => 'nullable|string',
             'category_id' => 'required|exists:categories,id',
-            'stock' => 'required|integer',
+            'stock' => 'required|integer|min:0',
             'image_path' => $this->productId ? 'nullable|image|max:2048' : 'required|image|max:2048',
         ]);
 
         if ($this->image_path) {
             $path = $this->image_path->store('products', 'public');
-        }
+        } else if ($this->productId){
+            $product = Product::findOrFail($this->productId);
+            $path = $product->image_path;
+        } 
 
         Product::updateOrCreate(
             ['id' => $this->productId],

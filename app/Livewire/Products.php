@@ -6,10 +6,13 @@ use App\Models\Product;
 use Livewire\Component;
 use Illuminate\Support\Str;
 use Livewire\WithPagination;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class Products extends Component
 {
     use WithPagination;
+     use AuthorizesRequests;
+    
 
     public $perPage = 10;
     public $search= '' ;   
@@ -48,6 +51,7 @@ class Products extends Component
 
      public function delete($id)
     {
+        $this->authorize('delete', Product::class);
         $product = Product::findOrFail($id);
         if ($product->image_path && file_exists(storage_path('app/public/' . $product->image_path))) {
             unlink(storage_path('app/public/' . $product->image_path));
@@ -60,6 +64,7 @@ class Products extends Component
 
     public function render()
     {
+        
         $query = Product::query()->with('category');
 
         if ($this->search !== '') {
