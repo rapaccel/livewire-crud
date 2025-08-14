@@ -30,6 +30,20 @@ class ProductForm extends Component
         }
     }
 
+    protected $rules = [
+        'name' => 'required|string|max:255',
+        'price' => 'required|numeric|min:0',
+        'category_id' => 'required|exists:categories,id',
+        'stock' => 'required|integer|min:0',
+        'description' => 'nullable|string',
+        'image_path' => 'nullable|image|max:2048',
+    ];
+
+    public function updated($propertyName)
+    {
+        $this->validateOnly($propertyName);
+    }
+
     public function save()
     {
         $this->authorize('create', Product::class);

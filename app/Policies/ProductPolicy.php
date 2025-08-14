@@ -16,7 +16,7 @@ class ProductPolicy
     use HandlesAuthorization;
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,7 @@ class ProductPolicy
      */
     public function view(User $user, product $product): bool
     {
-        return false;
+        return true;
     }
 
     /**

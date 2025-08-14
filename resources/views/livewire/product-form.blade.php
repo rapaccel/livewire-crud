@@ -4,7 +4,8 @@
 
         <div>
             <label>Name</label>
-            <input type="text" wire:model="name" class="border rounded px-3 py-2 w-full">
+            <input type="text" wire:model="name" wire:model.live.debounce.300ms="name"
+                class="border rounded px-3 py-2 w-full">
             @error('name')
                 <span class="text-red-500">{{ $message }}</span>
             @enderror
@@ -12,7 +13,11 @@
 
         <div>
             <label>Price</label>
-            <input type="number" wire:model="price" step="0.01" class="border rounded px-3 py-2 w-full">
+            <input type="number" wire:model="price" wire:model.live.debounce.300ms="price" step="0.01"
+                class="border rounded px-3 py-2 w-full">
+            @error('price')
+                <span class="text-red-500">{{ $message }}</span>
+            @enderror
         </div>
 
         <div>
@@ -27,17 +32,25 @@
 
         <div>
             <label>Stock</label>
-            <input type="number" wire:model="stock" class="border rounded px-3 py-2 w-full">
+            <input type="number" wire:model="stock" wire:model.live.debounce.300ms="stock"
+                class="border rounded px-3 py-2 w-full">
+            @error('stock')
+                <span class="text-red-500">{{ $message }}</span>
+            @enderror
         </div>
 
         <div>
             <label>Description</label>
-            <textarea wire:model="description" class="border rounded px-3 py-2 w-full"></textarea>
+            <textarea wire:model="description" wire:model.live.debounce.300ms="description" class="border rounded px-3 py-2 w-full"></textarea>
+            @error('description')
+                <span class="text-red-500">{{ $message }}</span>
+            @enderror
         </div>
 
         <div>
             <label>Image</label>
-            <input type="file" wire:model="image_path" class="border rounded px-3 py-2 w-full">
+            <input type="file" wire:model="image_path" wire:model.live.debounce.300ms="image_path"
+                class="border rounded px-3 py-2 w-full">
             @if ($image_path)
                 <img src="{{ $image_path->temporaryUrl() }}" class="w-32 h-32 mt-2 object-cover">
             @elseif ($image_preview)
@@ -49,7 +62,8 @@
             @enderror
         </div>
 
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+        <button type="submit" wire:loading.attr="disabled"
+            class="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed">
             Save
         </button>
     </form>
